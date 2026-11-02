@@ -1,0 +1,68 @@
+{
+  "manifest_version": 3,
+  "name": "X Videos tab",
+  "version": "0.3.0",
+  "description": "A Videos tab for x.com: a grid, a watch page with theatre mode, and Reels with double-tap to like.",
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "permissions": [
+    "declarativeNetRequest",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "host_permissions": [
+    "https://x.com/*"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "frames",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://x.com/*"
+      ],
+      "js": [
+        "src/hook.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true,
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://x.com/*"
+      ],
+      "js": [
+        "src/vendor/skullet.js",
+        "src/app.js"
+      ],
+      "css": [
+        "src/vendor/skullet.css",
+        "src/app.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/seed.json"
+      ],
+      "matches": [
+        "https://x.com/*"
+      ]
+    }
+  ],
+  "homepage_url": "https://github.com/HKTITAN/xVideos"
+}

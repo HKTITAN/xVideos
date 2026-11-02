@@ -1,0 +1,5 @@
+node_modules/
+_metadata/
+build/.rec/
+dist/
+*.log

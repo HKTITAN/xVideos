@@ -1,0 +1,115 @@
+[skullet-reveal] {
+  position: relative;
+}
+
+skullet-reveal {
+  display: block;
+}
+
+skullet-reveal[loading]:not(:defined) {
+  visibility: hidden;
+}
+
+[skullet-pane] {
+  display: block;
+}
+
+[skullet-loading] {
+  position: relative;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+[skullet-inactive] {
+  display: none !important;
+}
+
+[skullet-layer] {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+[skullet-bar] {
+  display: block;
+  background-color: var(--skullet-base, rgb(128 128 128 / 0.2));
+  background-repeat: no-repeat;
+}
+
+/* Containers keep their surface; what they hold is drawn by bones, measured before the first paint */
+@scope ([skullet-loading]) to ([skullet-own], [skullet-layer]) {
+  :scope,
+  :scope * {
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: none !important;
+    text-decoration-color: transparent !important;
+  }
+
+  :scope ::placeholder {
+    color: transparent !important;
+  }
+
+  /* A line to measure in empty text; content only, never a size, or a dot-sized span would grow round it */
+  :scope :is(a, b, code, dd, dt, em, h1, h2, h3, h4, h5, h6, i, label, li, p, small, span, strong, td, th, time):empty:not(svg *)::before {
+    content: "000000";
+  }
+
+  /* Leaves are drawn by bones, so their own paint never shows; visibility, as measuring reads it */
+  :scope :is(:not(:has(*)), audio, canvas, embed, iframe, img, input, object, picture, select, svg, textarea, video, [skullet-covered], [skullet-block]):not(svg *) {
+    visibility: hidden !important;
+  }
+
+  /* No script to measure: a bar struck through each line of text instead */
+  @media (scripting: none) {
+    :scope :not(:has(*)):not(svg *) {
+      visibility: visible !important;
+    }
+
+    :scope,
+    :scope * {
+      text-decoration: line-through var(--skullet-base, rgb(128 128 128 / 0.2)) !important;
+      text-decoration-thickness: 0.72em !important;
+      text-decoration-skip-ink: none !important;
+    }
+
+    :scope :is(audio, canvas, embed, iframe, img, input, object, picture, select, svg, textarea, video, [skullet-block]):not(svg *) {
+      visibility: visible !important;
+      background: var(--skullet-base, rgb(128 128 128 / 0.2)) !important;
+    }
+
+    :scope svg * {
+      fill: transparent !important;
+      stroke: transparent !important;
+    }
+
+    :scope :is(img, video) {
+      object-position: -100vw 0;
+    }
+  }
+}
+
+/* Read by screen readers in the skeleton's place, never seen */
+[skullet-status] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Debug x-ray: the ghost shown through its bones, to see what was measured */
+[skullet-xray] [skullet-loading] [skullet-ghost],
+[skullet-xray] [skullet-loading] [skullet-ghost] *:not(svg *) {
+  visibility: visible !important;
+  color: rgb(255 0 80 / 0.7) !important;
+  -webkit-text-fill-color: rgb(255 0 80 / 0.7) !important;
+}
+
+/* Lets addStyles see a stylesheet already on the page, from styles.css or a server render */
+:root {
+  --skullet: 1;
+}
