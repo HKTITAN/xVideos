@@ -709,3 +709,8 @@ span.xvt-ava { display: block; }
 
 /* the header (and its suggestions) paints over the scrolling body */
 .xvt-head { position: relative; z-index: 10; }
+
+/* a narrow reel keeps the author on one line: the name ellipsizes, the handle gives way first */
+.xvt-rinfo .xvt-author { flex-wrap: nowrap; max-width: 100%; }
+.xvt-rinfo .xvt-author b { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xvt-rinfo .xvt-author .xvt-sub { flex: 0 1000 auto; min-width: 0; }

@@ -1260,7 +1260,12 @@
     // request. Skeleton while the thread frame loads; a way out if it fails.
     function Replies(it, T) {
       const list = h('div', { class: 'xvt-rlist' });
-      const moreBtn = h('button', { type: 'button', class: 'xvt-btn xvt-rmore', hidden: true, onclick: () => { moreBtn.disabled = true; moreBtn.textContent = 'Loading…'; T.loadMore(); } }, 'Show more replies');
+      const moreBtn = h('button', { type: 'button', class: 'xvt-btn xvt-rmore', hidden: true, onclick: () => {
+        moreBtn.disabled = true; moreBtn.textContent = 'Loading…'; T.loadMore();
+        // X may have nothing more to send; give the button back rather than spin forever
+        clearTimeout(moreT); moreT = setTimeout(() => { moreBtn.disabled = false; moreBtn.textContent = 'Show more replies'; }, 8000);
+      } }, 'Show more replies');
+      let moreT = 0;
       const user = me();
       const input = h('textarea', { class: 'xvt-compose', rows: '1', placeholder: 'Post your reply', 'aria-label': 'Post your reply', maxlength: '280',
         oninput: () => { input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px'; send.disabled = !input.value.trim(); },

@@ -14,7 +14,8 @@ mkdirSync(MEDIA, { recursive: true })
 const EXT = resolve(new URL('..', import.meta.url).pathname.replace(/^\/(\w:)/, '$1'))
 const extCss = ['src/vendor/skullet.css', 'src/app.css'].map((f) => readFileSync(join(EXT, f), 'utf8')).join('\n')
 
-const URL_RE = /https:\/\/(?:pbs|abs|abs-0)\.twimg\.com\/[^"'\s)<>\\]+/g
+// stops at an HTML-escaped quote too: style="url(&quot;...&quot;)"
+const URL_RE = /https:\/\/(?:pbs|abs|abs-0)\.twimg\.com\/(?:(?!&quot;)[^"'\s)<>\\])+/g
 const cache = new Map()
 
 async function localize(url) {
@@ -53,7 +54,9 @@ async function inlineImports(css) {
   return css
 }
 
-const SCROLL = `<script>document.querySelectorAll('[data-xvt-scroll]').forEach(function(e){e.scrollTop=+e.getAttribute('data-xvt-scroll').split(':')[1]})</script>`
+// Each scrolled element gets its captured offset back; ?s<i>=<px> overrides one, so a film
+// can open the same page at another scroll. Re-applied once images and fonts settle.
+const SCROLL = `<script>(function(){var q=new URLSearchParams(location.search);function go(){document.querySelectorAll('[data-xvt-scroll]').forEach(function(e){var p=e.getAttribute('data-xvt-scroll').split(':');var o=q.get('s'+p[0]);e.scrollTop=o!=null?+o:+p[1]})}go();addEventListener('load',go);document.fonts&&document.fonts.ready.then(go)})()</script>`
 
 createServer(async (req, res) => {
   res.setHeader('access-control-allow-origin', '*')
@@ -65,9 +68,9 @@ createServer(async (req, res) => {
   try {
     const d = JSON.parse(body)
     let html = await inlineImports(d.html)
-    html = html.replace('</head>', `<style>${extCss}\nhtml,body{overflow:hidden!important}</style></head>`)
+    html = html.replace('</head>', `<style>${extCss}\nhtml{scrollbar-width:none}html::-webkit-scrollbar{display:none}*,html{scroll-behavior:auto!important;scroll-snap-type:none!important}</style></head>`)
     html = await rewrite(html)
-    html = html.replace('</body>', SCROLL + '</body>')
+    html = html.replace(/ loading="lazy"/g, '').replace('</body>', SCROLL + '</body>')
     writeFileSync(join(OUT, `${d.name}.html`), html)
     const { html: _, ...meta } = d
     writeFileSync(join(OUT, `${d.name}.json`), JSON.stringify(meta, null, 2))
@@ -78,4 +81,4 @@ createServer(async (req, res) => {
     res.statusCode = 500
     res.end(String(e))
   }
-}).listen(4700, '127.0.0.1', () => console.log('capture server on :4700 ->', OUT))
+}).listen(4711, '127.0.0.1', () => console.log('capture server on :4711 ->', OUT))
