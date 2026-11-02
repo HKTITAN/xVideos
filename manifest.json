@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "X Videos tab",
+  "name": "xVideos",
   "version": "0.3.0",
   "description": "A Videos tab for x.com: a grid, a watch page with theatre mode, and Reels with double-tap to like.",
   "icons": {

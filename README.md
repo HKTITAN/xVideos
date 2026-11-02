@@ -10,7 +10,7 @@
 
 ## Install
 
-1. Download `x-videos-tab-<version>.zip` from the [latest release](https://github.com/HKTITAN/xVideos/releases/latest) and unzip it.
+1. Download `xvideos-<version>.zip` from the [latest release](https://github.com/HKTITAN/xVideos/releases/latest) and unzip it.
 2. Open `chrome://extensions`, turn on **Developer mode** (top right), click **Load unpacked** and pick the unzipped folder.
 3. Open [x.com](https://x.com). **Videos** sits under Explore in the sidebar.
 
